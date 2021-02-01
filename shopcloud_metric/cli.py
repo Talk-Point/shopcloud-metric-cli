@@ -1,5 +1,6 @@
 import requests
-import os, time
+import os
+import time
 from datetime import datetime
 from shopcloud_secrethub import SecretHub
 
@@ -42,8 +43,8 @@ class MetricRegistry:
 
     def gauge(self, name: str, **kwargs):
         labels = kwargs.get('labels', {})
-        for l in self.labels.keys():
-            labels[l] = self.labels[l]
+        for key in self.labels.keys():
+            labels[key] = self.labels[key]
         self.metrics.append(
             Gauge(
                 name, 
