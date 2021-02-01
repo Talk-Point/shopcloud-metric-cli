@@ -129,3 +129,4 @@ dmypy.json
 .pyre/
 
 api/.env.yaml
+/.DS_Store
