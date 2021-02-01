@@ -24,6 +24,9 @@ with job as j:
     raise Exception('AS a')
     j.gauge('job_last_success_unixtime', labels={'supplier': 'SP'})
 
+job.gauge('job_last_success_unixtime', labels={'supplier': 'SP'})
+job.success()
+
 ```
 
 __RawMetrics:__  

@@ -110,5 +110,16 @@ class JobMetric():
         return self.registry
 
     def __exit__(self, type, value, traceback):
+        pass
+        self.registry.push()
+
+    def gauge(self, *args, **kwargs):
+        self.registry.gauge(*args, **kwargs)
+
+    def success(self):
         self.registry.gauge('job_up', value=1)
+        self.registry.push()
+    
+    def failed(self):
+        self.registry.gauge('job_up', value=0)
         self.registry.push()
