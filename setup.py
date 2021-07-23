@@ -5,7 +5,7 @@ with open('README.md') as readme_file:
 
 setup_args = dict(
     name='shopcloud_metric',
-    version='0.2.0',
+    version='0.2.1',
     description='CLI tool for Metrics',
     long_description_content_type="text/markdown",
     long_description=README,
@@ -14,7 +14,7 @@ setup_args = dict(
     author='Konstantin Stoldt',
     author_email='konstantin.stoldt@talk-point.de',
     keywords=['CLI'],
-    url='https://github.com/Talk-Point/shopcloud-infrastructure-cli',
+    url='https://github.com/Talk-Point/shopcloud-metric-cli',
     scripts=['./scripts/metric'],
 )
 
