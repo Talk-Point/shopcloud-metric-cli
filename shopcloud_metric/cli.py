@@ -53,41 +53,32 @@ class MetricRegistry:
             )
         )
 
-    def _push(self, metrics: list):
-        if self.env == "testing":
-            print('push-metrics: {}'.format(metrics))
-            return True
-        response = requests.post(
-            'https://europe-west3-shopcloud-analytics.cloudfunctions.net/metric-gateway-api',
-            headers={
-                'User-Agent': 'shopcloud-infrastructure',
-                'auth': self.hub.read('talk-point/kpi-gateway/auth-token')
-            },
-            json={
-                'metrics': metrics
-            }
-        )
-        print('metric-gateway-api status_code: {} content: {}'.format(response.status_code, response.content))
-        return (200 <= response.status_code <= 299)
-
-        return True
+    def _push(self, metrics: list, **kwargs):
+        for _ in range(kwargs.get('retry', 10)):
+            try:
+                if self.env == "testing":
+                    print('push-metrics: {}'.format(metrics))
+                    return True
+                response = requests.post(
+                    'https://europe-west3-shopcloud-analytics.cloudfunctions.net/metric-gateway-api',
+                    headers={
+                        'User-Agent': 'shopcloud-infrastructure',
+                        'auth': self.hub.read('talk-point/kpi-gateway/auth-token')
+                    },
+                    json={
+                        'metrics': metrics
+                    }
+                )
+                print('metric-gateway-api status_code: {} content: {}'.format(response.status_code, response.content))
+                return (200 <= response.status_code <= 299)
+            except Exception as e:
+                time.sleep(2)
+        
+        raise Exception('Can not push metrics')
 
     def push(self):
         metrics = [x.to_dict() for x in self.metrics]
-        
-        is_success = False
-        for i in range(10): # 
-            response_is_success = self._push(metrics)
-        
-            if response_is_success:
-                is_success = True
-                break
-
-            time.sleep(2)
-        
-        if not is_success:
-            raise Exception('Can not push metrics')
-
+        self._push(metrics, retry=10)
         self.metrics = []
 
 
